@@ -6,7 +6,6 @@ public class Parser {
     Map map = new Map();
     Game game = new Game();
 
-
     public Parser(){
         map.createMap();
     }

@@ -3,7 +3,6 @@ package Adventure;
 public class Room {
     String roomName;
     String roomDescription;
-    int roomID;
     Room north;
     Room east;
     Room south;
@@ -49,5 +48,4 @@ public class Room {
             west.setEast(this);
         }
     }
-
 }
