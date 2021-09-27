@@ -2,9 +2,9 @@ package Adventure;
 
 public class Player {
     Map map = new Map();
-
     String name;
     Room playerRoom;
+
 
     public Player(String name){
         this.name=name;

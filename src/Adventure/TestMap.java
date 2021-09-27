@@ -1,7 +1,7 @@
 package Adventure;
 
-public class Map {
-    Room room1 = new Room("Room 1", "This is room 1");
+public class TestMap {
+    /*Room room1 = new Room("Room 1", "This is room 1");
     Room room2 = new Room("Room 2", "This is room 2");
     Room room3 = new Room("Room 3", "This is room 3");
     Room room4 = new Room("Room 4", "This is room 4");
@@ -15,7 +15,7 @@ public class Map {
     //  4 X 5 X 6
     //  |   |   |
     //  7 = 8 = 9
-    public Map(){
+    public TestMap(){
     }
     public void createMap(){
         room1.setEast(room2);
@@ -27,8 +27,5 @@ public class Map {
         room6.setSouth(room9);
         room7.setEast(room8);
         room8.setEast(room9);
-    }
-
-
-
+    }*/
 }
