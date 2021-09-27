@@ -12,9 +12,6 @@ public class Room {
         this.roomName=roomName;
         this.roomDescription=roomDescription;
     }
-
-
-
     public void setNorth(Room north){
         if(this.north==north){
             return;
@@ -51,10 +48,4 @@ public class Room {
             west.setEast(this);
         }
     }
-
-
-
-
-
-
 }

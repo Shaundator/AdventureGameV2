@@ -1,79 +1,56 @@
 package Adventure;
 
 public class Game {
-    Room currentRoom = null;
-    String currentInput;
+    Player player = new Player("Jack");
 
-    public Game() {
-        Map map = new Map();
-    }
-    public void getStarterRoom(Room startRoom){
-        currentRoom=startRoom;
+    public Game(){
     }
 
-    public boolean validateInput(String input){
-            if ((input.equalsIgnoreCase("Go North")) || (input.equalsIgnoreCase("Go N")) || (input.equalsIgnoreCase("North")) || (input.equalsIgnoreCase("N"))) {
-                currentInput="north";
-                return true;
-            } else if ((input.equalsIgnoreCase("Go East")) || (input.equalsIgnoreCase("Go E")) || (input.equalsIgnoreCase("East")) || (input.equalsIgnoreCase("E"))) {
-                return true;
-            } else if ((input.equalsIgnoreCase("Go South")) || (input.equalsIgnoreCase("Go S")) || (input.equalsIgnoreCase("South")) || (input.equalsIgnoreCase("S"))) {
-                input = "south";
-                return true;
-            } else if ((input.equalsIgnoreCase("Go West")) || (input.equalsIgnoreCase("Go W")) || (input.equalsIgnoreCase("West")) || (input.equalsIgnoreCase("W"))) {
-                input = "west";
-                return true;
-            } else if (input.equalsIgnoreCase("look")) {
-                input = "look";
-                return true;
-            } else if (input.equalsIgnoreCase("Help")) {
-                input = "help";
-                return true;
-            } else if (input.equalsIgnoreCase("Exit")) {
-                return true;
-            }
-            return false;
-    } //Is userInput Command
-    public void userInput(String input) {
-        if ((input.equalsIgnoreCase("Go North")) || (input.equalsIgnoreCase("Go N")) || (input.equalsIgnoreCase("North")) || (input.equalsIgnoreCase("N"))) {
-            if (currentRoom.north != null) {
-                currentRoom = currentRoom.north;
-                System.out.println("You travel to " + currentRoom.roomName);
+    public void move(String input) {
+        if (input.equals("North")) {
+            if (player.playerRoom.north != null) {
+                player.playerRoom = player.playerRoom.north;
+                System.out.println("You travel to " + player.playerRoom.roomName);
             } else {
                 System.out.println("You cannot travel this direction");
             }
-        } else if ((input.equalsIgnoreCase("Go East")) || (input.equalsIgnoreCase("Go E")) || (input.equalsIgnoreCase("East")) || (input.equalsIgnoreCase("E"))) {
-            if (currentRoom.east != null) {
-                currentRoom = currentRoom.east;
-                System.out.println("You travel to " + currentRoom.roomName);
+        }
+        if (input.equals("East")) {
+            if (player.playerRoom.east != null) {
+                player.playerRoom = player.playerRoom.east;
+                System.out.println("You travel to " + player.playerRoom.roomName);
             } else {
                 System.out.println("You cannot travel this direction");
             }
-        } else if ((input.equalsIgnoreCase("Go South")) || (input.equalsIgnoreCase("Go S")) || (input.equalsIgnoreCase("South")) || (input.equalsIgnoreCase("S"))) {
-            if (currentRoom.south != null) {
-                currentRoom = currentRoom.south;
-                System.out.println("You travel to " + currentRoom.roomName);
+        }
+        if (input.equals("South")) {
+            if (player.playerRoom.south != null) {
+                player.playerRoom = player.playerRoom.south;
+                System.out.println("You travel to " + player.playerRoom.roomName);
             } else {
                 System.out.println("You cannot travel this direction");
             }
-        } else if ((input.equalsIgnoreCase("Go West")) || (input.equalsIgnoreCase("Go W")) || (input.equalsIgnoreCase("West")) || (input.equalsIgnoreCase("W"))) {
-            if (currentRoom.west != null) {
-                currentRoom = currentRoom.west;
-                System.out.println("You travel to " + currentRoom.roomName);
+        }
+        if (input.equals("West")) {
+            if (player.playerRoom.west != null) {
+                player.playerRoom = player.playerRoom.west;
+                System.out.println("You travel to " + player.playerRoom.roomName);
             } else {
                 System.out.println("You cannot travel this direction");
             }
-        } else if (input.equalsIgnoreCase("look")) {
-            System.out.println(currentRoom.roomName);
-            System.out.println(currentRoom.roomDescription);
-        } else if (input.equalsIgnoreCase("Help")) {
-            System.out.println("You ask for help");
-        } else if (input.equalsIgnoreCase("Exit")) {
+        }
+    }
+    public void menu(String input) {
+        if (input.equals("Look")) {
+            System.out.println(player.name + " looks around");
+            System.out.println(player.playerRoom.roomDescription);
+        }
+        if (input.equals("Help")) {
+            System.out.println(player.name + " asks for help");
+        }
+        if (input.equals("Exit")) {
             System.exit(0);
         }
-        else{
-            System.out.println("Not a valid command");
-        }
-    } //Menu
+    }
 }
 
