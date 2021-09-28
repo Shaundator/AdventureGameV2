@@ -1,8 +1,11 @@
 package Adventure;
 
+import java.util.ArrayList;
+
 public class Room {
     String roomName;
     String roomDescription;
+    ArrayList<Items> items = new ArrayList();
     Room north;
     Room east;
     Room south;
@@ -12,6 +15,22 @@ public class Room {
         this.roomName=roomName;
         this.roomDescription=roomDescription;
     }
+
+    public void addItems(Items item){
+        items.add(item);
+    }
+    public void removeItems(Items item){
+        items.remove(item);
+    }
+    public String getItems(){
+        int itemAmount = items.size();
+        String result = "Items in " + roomName + ":";
+        for(int i=0; i<itemAmount; i++){
+            result += "\n" + items.get(i).name;
+        }
+        return result;
+    }
+
     public void setNorth(Room north){
         if(this.north==north){
             return;
