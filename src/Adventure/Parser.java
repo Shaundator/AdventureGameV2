@@ -27,6 +27,8 @@ public class Parser {
                 game.menu("Help");
             } else if (input.equalsIgnoreCase("Exit")) {
                 game.menu("Exit");
+            } else {
+                game.menu("Invalid! Type something else or ask for help");
             }
         }
     }
