@@ -6,6 +6,7 @@ public class Player {
     Map map = new Map();
     String name;
     Room playerRoom;
+    int weightLimit = 20;
     ArrayList<Items> inventory = new ArrayList();
 
     public Player(){
@@ -19,7 +20,7 @@ public class Player {
         for(int i=0; i<playerRoom.items.size(); i++){
             if(item==playerRoom.items.get(i)){
                 inventory.add(item);
-                playerRoom.removeItems(item);
+                playerRoom.removeItem(item);
             }
         }
     }
@@ -27,13 +28,31 @@ public class Player {
         for(int i=0; i<inventory.size(); i++){
             if(item==inventory.get(i)){
                 inventory.remove(item);
-                playerRoom.addItems(item);
+                playerRoom.addItem(item);
             }
         }
     }
+    public boolean itemWeightLimit(Items item){
+        int currentWeight = 0;
+        for(int i = 0; i < inventory.size(); i++){
+            currentWeight+=inventory.get(i).weight;
+            if(currentWeight>=weightLimit){
+                return false;
+            }
+        }
+        return true;
+    }
+    public Items findItem(String input){
+        for(int i = 0; i < inventory.size(); i++ ){
+            if(inventory.get(i).nameID.equals(input)){
+                return inventory.get(i);
+            }
+        }
+        return null;
+    }
     public String getInventory(){
         int itemAmount = inventory.size();
-        String result = "Items in inventory: ";
+        String result = "";
         for(int i=0; i<itemAmount; i++){
             result += "\n" + inventory.get(i).name;
         }
@@ -44,6 +63,7 @@ public class Player {
         map.createMap();
         map.putItems();
     }
+
     public int getDiscoveryEnd() {
         return discoveryEnd;
     } //Equals 1 if all rooms has been discovered
@@ -51,7 +71,6 @@ public class Player {
         if(discoveryEnd==1){
             return;
         }
-
         for (int i = 0; i < discoveredRooms.length; i++) {
             if (discoveredRooms[i] == playerRoom) {
                 return;
@@ -68,6 +87,7 @@ public class Player {
             discoveryEnd++;
         }
     } //How many rooms has been discovered
+
     public Room getPlayerRoom() {
         return getPlayerRoom();
 
