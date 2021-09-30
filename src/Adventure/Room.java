@@ -16,27 +16,19 @@ public class Room {
         this.roomDescription=roomDescription;
     }
 
-    public void addItem(Items item){
+    public void addItems(Items item){
         items.add(item);
     }
-    public void removeItem(Items item){
+    public void removeItems(Items item){
         items.remove(item);
     }
-
-    public String getItems() {
-        String result = "";
-        for(int i=0; i<items.size(); i++){
+    public String getItems(){
+        int itemAmount = items.size();
+        String result = "Items in " + roomName + ":.";
+        for(int i=0; i<itemAmount; i++){
             result += "\n" + items.get(i).name;
         }
         return result;
-    }
-    public Items findItem(String input){
-        for(int i = 0; i < items.size(); i++ ){
-            if(items.get(i).nameID.equals(input)){
-                return items.get(i);
-            }
-        }
-        return null;
     }
 
     public void setNorth(Room north){

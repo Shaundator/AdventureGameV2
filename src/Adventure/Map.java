@@ -14,10 +14,9 @@ public class Map {
     Room room8 = new Room("the Valley of Confusion", "The valley is green and blue and filled with shadows");
     Room room9 = new Room("the river of sadness", "The stream is strong, so be careful when you cross over");
 
-    Items item1 = new Items("Magnificent Rock","rock",10);
-    Items item2 = new Items("Someone's collection of pokemon cards","cards",10);
-    Items item3 = new Items("A really big gun","gun",10);
-    Items item4 = new Items("The number 1","1",1);
+    Items item1 = new Items("Magnificent Rock","rock",1);
+    Items item2 = new Items("Someone's collection of pokemon cards.","cards",10);
+    Items item3 = new Items("A really big gun","gun",25);
 
 
     //  1 = 2 = 3
@@ -41,11 +40,9 @@ public class Map {
     }
 
     public void putItems(){
-        room1.addItem(item1);
-        room1.addItem(item2);
-        room1.addItem(item3);
-        room2.addItem(item1);
-        room2.addItem(item4);
+        room1.addItems(item1);
+        room1.addItems(item2);
+        room1.addItems(item3);
     }
 
 

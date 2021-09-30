@@ -10,7 +10,7 @@ public class Player {
     ArrayList<Items> inventory = new ArrayList();
 
     public Player(){
-        this.name="You";
+        this.name="You.";
     }
     public void setPlayerName(String name){
         this.name=name;

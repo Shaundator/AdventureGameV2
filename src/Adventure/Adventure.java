@@ -5,312 +5,161 @@ import java.util.Scanner;
 public class Adventure {
     Player player = new Player();
 
-    //The Game
+
     public void play(){
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Welcome to WAKE ME UP!");
+        System.out.println("\nAn evil hypnotist has put you in a hypnosis!" +
+                "\nYou can't wake up unless you solve the problems in his fantasy land 'Disturbia'" +
+                "\nWrite directions to move around on the map (ex. north, n og go north)" +
+                "\nYou can write 'look' to get more details about the place you are at" +
+                "\nAnd if you need help, simply write 'help' to get a hint to solve the problem.");
+        System.out.println("\nCurrently you are placed in a well. Write a direction:");
         player.getStarterRoom();
-        Scanner name = new Scanner(System.in);
-        System.out.println(startGameText());
-        player.setPlayerName(name.nextLine());
-        System.out.println(introText());
-        Scanner scanner = new Scanner(System.in);
-        boolean running = true;
-        while (running) {
-            //Eventually put different criteria for scenarios
+
+        boolean completed = true;
+        while(completed){
+            String userInput = sc.nextLine();
+            scanCommand(userInput); //Registers user input
             discovery();
-            //Start of the normal input menu
-            String input = scanner.nextLine(); //user writes command
-            String command;
-            String commandInput = "";
-            if(input.contains(" ")) {
-                command = input.substring(0, input.indexOf(" "));
-                commandInput = input.substring(input.indexOf(" ") + 1);
-            }
-            else{
-                command=scanCommand(input);
-            }
-            switch (command) { //Stole this from LampToggler3000
-                case "go":
-                    if(scanCommand(input).equals(command)){
-                        go(input);
-                        break;
-                    }
-                    go(commandInput);
-                    break;
-                case "look":
-                    look();
-                    break;
-                case "inventory":
-                    inventory();
-                    break;
-                case "take":
-                    take(commandInput);
-                    break;
-                case "drop":
-                    drop(commandInput);
-                    break;
-                case "help":
-                    help();
-                    break;
-                case "exit":
-                    exit();
-                    running = false;
-                    break;
-                default:
-                    System.out.println(invalidCommand(command));
-            }
         }
+        System.out.println("You won the game");
     }
 
     //Scenarios
     public void discovery(){
         if(player.getDiscoveryEnd()==1){
-            System.out.println(colorText(green,player.name+ " has discovered all rooms!"));
+            System.out.println("You have discovered all rooms!");
             player.discoveryEnd=2;
         }
     }
 
-    //User Actions
-    public void go(String input) {
-        switch (scanDirection(input)) {
-            case "north":
-                if (player.playerRoom.north != null) {
-                    player.playerRoom = player.playerRoom.north;
-                    System.out.println(travelsToNewRoom());
-                } else {
-                    System.out.println(invalidDirection());
-                }
-                break;
-            case "east":
-                if (player.playerRoom.east != null) {
-                    player.playerRoom = player.playerRoom.east;
-                    System.out.println(travelsToNewRoom());
-                } else {
-                    System.out.println(invalidDirection());
-                }
-                break;
-            case "south":
-                if (player.playerRoom.south != null) {
-                    player.playerRoom = player.playerRoom.south;
-                    System.out.println(travelsToNewRoom());
-                } else {
-                    System.out.println(invalidDirection());
-                }
-                break;
-            case "west":
-                if (player.playerRoom.west != null) {
-                    player.playerRoom = player.playerRoom.west;
-                    System.out.println(travelsToNewRoom());
-                } else {
-                    System.out.println(invalidDirection());
-                }
-                break;
-            default:
-                System.out.println(invalidDirection(input));
-                break;
+    //CommandMenus
+    public void commandMove(String input) {
+        if (input.equals("north")) {
+            if (player.playerRoom.north != null) {
+                player.playerRoom = player.playerRoom.north;
+                System.out.println("You traveled to " + player.playerRoom.roomName);
+            } else {
+                System.out.println("You cannot go that way");
+            }
+        }
+        if (input.equals("east")) {
+            if (player.playerRoom.east != null) {
+                player.playerRoom = player.playerRoom.east;
+                System.out.println("You traveled to " + player.playerRoom.roomName);
+            } else {
+                System.out.println("You cannot go that way");
+            }
+        }
+        if (input.equals("south")) {
+            if (player.playerRoom.south != null) {
+                player.playerRoom = player.playerRoom.south;
+                System.out.println("You traveled to " + player.playerRoom.roomName);
+            } else {
+                System.out.println("You cannot go that way");
+            }
+        }
+        if (input.equals("west")) {
+            if (player.playerRoom.west != null) {
+                player.playerRoom = player.playerRoom.west;
+                System.out.println("You traveled to " + player.playerRoom.roomName);
+            } else {
+                System.out.println("You cannot go that way");
+            }
         }
     }
-    public void look(){
-        System.out.println(lookText());
-    }
-    public void inventory(){
-        if(player.inventory.size() == 0){
-            System.out.println(inventoryListEmpty());
-        } else {
-            System.out.println(inventoryList());
+    public void commandMenu(String input) {
+        Scanner menu = new Scanner(System.in);
+        if (input.equals("look")) {
+            System.out.println(player.name + " look around");
+            player.setDiscovery();
+            System.out.println(player.playerRoom.roomDescription);
+            System.out.println(player.playerRoom.getItems());
         }
-    }
-    public void take(String input) {
-        Items tempItem = player.playerRoom.findItem(input);
-        if(tempItem!=null){
-            if(player.itemWeightLimit(tempItem)) {
-                player.takeItem(tempItem);
-                System.out.println(takeItem(tempItem));
+        if (input.equals("help")) {
+            System.out.println(player.name + " ask for help");
+            //System.out.println("Hints til hjælp");
+        }
+        if(input.equals("inventory")){
+            if(player.inventory.size() == 0){
+                System.out.println("Your inventory is empty");
+            }else {
+                System.out.println(player.getInventory());
+            }
+        }
+        if(input.equals("take")){
+            System.out.println("Which item would you like to take?");
+            String take = menu.nextLine();
+            Items temp = scanItems(take);
+            if(temp!=null){
+                player.takeItem(temp);
+                System.out.println("You pick up " + temp.name);
+            }
+            else{System.out.println("This item does not exist in this room");
+            }
+        }
+        if(input.equals("drop")){
+            System.out.println("Which item would you like to drop?");
+            String drop = menu.nextLine();
+            Items temp = scanItems(drop);
+            if(temp!=null){
+                player.dropItem(temp);
+                System.out.println("You drop " + temp.name);
             }
             else{
-                System.out.println(exceededWeight(tempItem));
+                System.out.println("You dont have this item");
             }
         }
-        else {
-            System.out.println(takeItem(input));
+        if (input.equals("restart")){
+            Adventure newAdventure = new Adventure();
+            newAdventure.play();
+        }
+        if (input.equals("exit")) {
+            System.exit(0);
         }
     }
-    public void drop(String input){
-        Items tempItem = player.findItem(input);
-        if(tempItem!=null){
-            player.dropItem(tempItem);
-            System.out.println(dropItem(tempItem));
+    public Items scanItems(String input){
+        if(input.contains("rock")||input.contains("Rock")){
+            return player.map.item1;
         }
-        else {
-            System.out.println(dropItem(input));
+        if(input.equalsIgnoreCase("cards")){
+            return player.map.item2;
         }
-
-
-    }
-    public void help(){
-        System.out.println(helpText());
-    }
-    public void exit(){
-        System.out.println(exitText());
-    }
-
-    //Scanners
-    public String scanDirection(String userInput) {
-        if ((userInput.equalsIgnoreCase("North")) || (userInput.equalsIgnoreCase("N"))) {
-            return "north";
+        if(input.equalsIgnoreCase("gun")){
+            return player.map.item3;
         }
-        else if ((userInput.equalsIgnoreCase("East")) || (userInput.equalsIgnoreCase("E"))) {
-            return "east";
-        }
-        else if ((userInput.equalsIgnoreCase("South")) || (userInput.equalsIgnoreCase("S"))) {
-            return "south";
-        }
-        else if ((userInput.equalsIgnoreCase("West")) || (userInput.equalsIgnoreCase("W"))) {
-            return "west";
-        }
-        else return "invalid direction";
+        return null;
     }
-    public String scanCommand(String userInput) {
-        if ((userInput.equalsIgnoreCase("North")) || (userInput.equalsIgnoreCase("N"))) {
-            return "go";
-        }
-        else if ((userInput.equalsIgnoreCase("East")) || (userInput.equalsIgnoreCase("E"))) {
-            return "go";
-        }
-        else if ((userInput.equalsIgnoreCase("South")) || (userInput.equalsIgnoreCase("S"))) {
-            return "go";
-        }
-        else if ((userInput.equalsIgnoreCase("West")) || (userInput.equalsIgnoreCase("W"))) {
-            return "go";
-        }
-        else if ((userInput.equalsIgnoreCase("Inv")) || (userInput.equalsIgnoreCase("I"))){
-            return "inventory";
-        }
-        else if ((userInput.equalsIgnoreCase("Take"))){
-            return "take";
-        }
-        else if ((userInput.equalsIgnoreCase("drop"))){
-            return "drop";
-        }
-        else if (userInput.equalsIgnoreCase("Look")) {
-            return "look";
-        }
-        else if (userInput.equalsIgnoreCase("Help")) {
-            return "help";
-        }
-        else if(userInput.equalsIgnoreCase("Restart")){
-            return "restart";
-        }
-        else if (userInput.equalsIgnoreCase("Exit")) {
-            return "exit";
-        }
-        else{return userInput;}
+    public void scanCommand(String userInput) {
+        if ((userInput.equalsIgnoreCase("Go North")) || (userInput.equalsIgnoreCase("Go N")) || (userInput.equalsIgnoreCase("North")) || (userInput.equalsIgnoreCase("N"))) {
+            commandMove("north");
+        } else if ((userInput.equalsIgnoreCase("Go East")) || (userInput.equalsIgnoreCase("Go E")) || (userInput.equalsIgnoreCase("East")) || (userInput.equalsIgnoreCase("E"))) {
+            commandMove("east");
+        } else if ((userInput.equalsIgnoreCase("Go South")) || (userInput.equalsIgnoreCase("Go S")) || (userInput.equalsIgnoreCase("South")) || (userInput.equalsIgnoreCase("S"))) {
+            commandMove("south");
+        } else if ((userInput.equalsIgnoreCase("Go West")) || (userInput.equalsIgnoreCase("Go W")) || (userInput.equalsIgnoreCase("West")) || (userInput.equalsIgnoreCase("W"))) {
+            commandMove("west");
+        } else if ((userInput.equalsIgnoreCase("Inventory")) || (userInput.equalsIgnoreCase("Invent")) || (userInput.equalsIgnoreCase("Inv")) || (userInput.equalsIgnoreCase("I"))){
+            commandMenu("inventory");
+        } else if ((userInput.equalsIgnoreCase("Take"))){
+            commandMenu("take");
+        } else if ((userInput.equalsIgnoreCase("drop"))){
+            commandMenu("drop");
+        } else if (userInput.equalsIgnoreCase("Look")) {
+            commandMenu("look");
+        } else if (userInput.equalsIgnoreCase("Help")) {
+            commandMenu("help");
+        } else if(userInput.equalsIgnoreCase("Restart")){
+            commandMenu("restart");
+        } else if (userInput.equalsIgnoreCase("Exit")) {
+            commandMenu("exit");
+        } else{System.out.println("Invalid command");}
     }
-
-    //StringTexts
-    //General CommandMenu
-    public String startGameText(){
-        return "Please write the name of your character to start the game";
-    }
-    public String introText() {
-        return "Welcome to WAKE ME UP!\n" +
-                colorText(cyan,
-                        "\nAn evil hypnotist has put " + player.name + " in a hypnosis!"+
-                                "\n" + player.name +  " can't wake up unless they solve the problems in his fantasy land 'Disturbia"+
-                                "\nWrite directions to move around on the map (ex. north, n og go north)"+
-                                "\nYou can write 'look' to get more details about the place you are at"+
-                                "\nAnd if you need help, simply write 'help' to get a hint to solve the problem") +
-                colorText(blue,"\nCurrently " + player.name + " is at " + player.playerRoom.roomName + ".") + "\nWrite a direction:";
-    }
-    public String invalidCommand(String command){
-        return colorText(red,"Unknown command: " + command);
-    }
-    //Go Command
-    public String travelsToNewRoom(){
-        return colorText(blue,player.name+" travels to " + player.playerRoom.roomName);
-    }
-    public String invalidDirection(){
-        return colorText(red,player.name+" cannot walk in this direction");
-    }
-    public String invalidDirection(String input){
-        return colorText(red,input+" is not a valid direction");
-    }
-    //Look Command
-    public String lookText(){
-        player.setDiscovery();
-        return player.name + " looks around\n" +
-                colorText(cyan,player.playerRoom.roomDescription) + "\n" +
-                roomItems();
-    }
-    public String roomItems(){
-        if(player.playerRoom.items.size()==0){
-            return colorText(red,"There are no items in " + player.playerRoom.roomName);
-        }
-        return "Items:" + colorText(blue,player.playerRoom.getItems());
-    }
-    //Inventory Command
-    public String inventoryList(){
-        return "Items in inventory:" +
-                colorText(blue,player.getInventory());
-
-    }
-    public String inventoryListEmpty(){
-        return colorText(red,player.name+"'s inventory is empty");
-    }
-    //Take Command
-    public String takeItem(Items item){
-        return colorText(green,"You pick up " + item.name);
-    }
-    public String takeItem(String item){
-        return colorText(red,player.playerRoom.roomName + " does not contain " + item + " of any kind");
-    }
-    public String exceededWeight(Items item){
-        return colorText(red,"You are not strong enough to pick up " + item.name);
-    }
-    //Drop Command
-    public String dropItem(Items item){
-        return colorText(yellow,"You drop " + item.name);
-    }
-    public String dropItem(String item){
-        return colorText(red,"You do not have " + item);
-    }
-    //Help Command
-    public String helpText(){
-        return player.name + " asks for help" +
-                white +"""
-                Move Commands
-                Go: Move player, North, East, South, West
-                Look: Information of current location
-                Inventory: Shows held items
-                Take: Pick up an item at the location
-                Drop: Drop an item at the location
-                Help: Shows commands
-                Exit: Exit the game
-                """;
-    }
-    //Exit Command
-    public String exitText(){
-        return colorText(red,"Without warning " + player.name + " trips over some strange object in " + player.playerRoom.roomName + " and dies");
-    }
-
-    //Colors
-    public String colorText(String color, String text){
-        return color + text + resetColour;
-    }
-    String resetColour = "\u001B[0m";
-    String black = "\u001B[30m";
-    String red = "\u001B[31m";
-    String green = "\u001B[32m";
-    String yellow = "\u001B[33m";
-    String blue = "\u001B[34m";
-    String purple = "\u001B[35m";
-    String cyan = "\u001B[36m";
-    String white = "\u001B[37m";
 
     //main
     public static void main(String[] args) {
         Adventure newAdventure = new Adventure();
         newAdventure.play();
     }
-
-
 }

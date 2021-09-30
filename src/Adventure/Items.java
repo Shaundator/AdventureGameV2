@@ -9,5 +9,6 @@ public class Items {
         this.name=name;
         this.nameID=nameID;
         this.weight=weight;
+        //.
     }
 }
