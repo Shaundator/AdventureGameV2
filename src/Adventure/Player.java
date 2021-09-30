@@ -20,7 +20,7 @@ public class Player {
         for(int i=0; i<playerRoom.items.size(); i++){
             if(item==playerRoom.items.get(i)){
                 inventory.add(item);
-                playerRoom.removeItem(item);
+                playerRoom.removeItems(item);
             }
         }
     }
@@ -28,7 +28,7 @@ public class Player {
         for(int i=0; i<inventory.size(); i++){
             if(item==inventory.get(i)){
                 inventory.remove(item);
-                playerRoom.addItem(item);
+                playerRoom.addItems(item);
             }
         }
     }
