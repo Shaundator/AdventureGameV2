@@ -12,7 +12,7 @@ public class Player {
     public Player(){
         this.name="You";
     }
-    public Player(String name){
+    public void setPlayerName(String name){
         this.name=name;
     }
 

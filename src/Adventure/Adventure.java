@@ -7,16 +7,11 @@ public class Adventure {
 
     //The Game
     public void play(){
-        System.out.print("Welcome to WAKE ME UP!\n" );
-        System.out.println("""
-                An evil hypnotist has put you in a hypnosis!
-                You can't wake up unless you solve the problems in his fantasy land 'Disturbia'
-                Write directions to move around on the map (ex. north, n og go north)
-                You can write 'look' to get more details about the place you are at
-                And if you need help, simply write 'help' to get a hint to solve the problem""");
         player.getStarterRoom();
-        System.out.println("\nCurrently you are at " + player.playerRoom.roomName + ". Write a direction:");
-
+        Scanner name = new Scanner(System.in);
+        System.out.println(startGameText());
+        player.setPlayerName(name.nextLine());
+        System.out.println(introText());
         Scanner scanner = new Scanner(System.in);
         boolean running = true;
         while (running) {
@@ -33,7 +28,7 @@ public class Adventure {
             else{
                 command=scanCommand(input);
             }
-            switch (command) { //Stole this from Peter
+            switch (command) { //Stole this from LampToggler3000
                 case "go":
                     if(scanCommand(input).equals(command)){
                         go(input);
@@ -45,7 +40,7 @@ public class Adventure {
                     look();
                     break;
                 case "inventory":
-                    getInventory();
+                    inventory();
                     break;
                 case "take":
                     take(commandInput);
@@ -57,11 +52,11 @@ public class Adventure {
                     help();
                     break;
                 case "exit":
-                    System.out.println("Goodbye");
+                    exit();
                     running = false;
                     break;
                 default:
-                    System.out.println("Unknown command: " + command);
+                    System.out.println(invalidCommand(command));
             }
         }
     }
@@ -69,107 +64,93 @@ public class Adventure {
     //Scenarios
     public void discovery(){
         if(player.getDiscoveryEnd()==1){
-            System.out.println("You have discovered all rooms!");
+            System.out.println(colorText(green,player.name+ " has discovered all rooms!"));
             player.discoveryEnd=2;
         }
     }
 
     //User Actions
-    public void move(String input) {
-        switch (input) {
+    public void go(String input) {
+        switch (scanDirection(input)) {
             case "north":
                 if (player.playerRoom.north != null) {
                     player.playerRoom = player.playerRoom.north;
-                    System.out.println("You traveled to " + player.playerRoom.roomName);
+                    System.out.println(travelsToNewRoom());
                 } else {
-                    System.out.println("You cannot go that way");
+                    System.out.println(invalidDirection());
                 }
                 break;
             case "east":
                 if (player.playerRoom.east != null) {
                     player.playerRoom = player.playerRoom.east;
-                    System.out.println("You traveled to " + player.playerRoom.roomName);
+                    System.out.println(travelsToNewRoom());
                 } else {
-                    System.out.println("You cannot go that way");
+                    System.out.println(invalidDirection());
                 }
                 break;
             case "south":
                 if (player.playerRoom.south != null) {
                     player.playerRoom = player.playerRoom.south;
-                    System.out.println("You traveled to " + player.playerRoom.roomName);
+                    System.out.println(travelsToNewRoom());
                 } else {
-                    System.out.println("You cannot go that way");
+                    System.out.println(invalidDirection());
                 }
                 break;
             case "west":
                 if (player.playerRoom.west != null) {
                     player.playerRoom = player.playerRoom.west;
-                    System.out.println("You traveled to " + player.playerRoom.roomName);
+                    System.out.println(travelsToNewRoom());
                 } else {
-                    System.out.println("You cannot go that way");
+                    System.out.println(invalidDirection());
                 }
                 break;
             default:
-                System.out.println(input + "is not a valid direction");
+                System.out.println(invalidDirection(input));
                 break;
         }
     }
-    public void go(String input) {
-        move(scanDirection(input));
+    public void look(){
+        System.out.println(lookText());
+    }
+    public void inventory(){
+        if(player.inventory.size() == 0){
+            System.out.println(inventoryListEmpty());
+        } else {
+            System.out.println(inventoryList());
+        }
     }
     public void take(String input) {
         Items tempItem = player.playerRoom.findItem(input);
         if(tempItem!=null){
             if(player.itemWeightLimit(tempItem)) {
                 player.takeItem(tempItem);
-                System.out.println("You pick up " + tempItem.name);
+                System.out.println(takeItem(tempItem));
             }
             else{
-                System.out.println("Picking this up will exceed the weigth limit");
+                System.out.println(exceededWeight(tempItem));
             }
         }
         else {
-            System.out.println("This room does not contain " + input);
+            System.out.println(takeItem(input));
         }
     }
     public void drop(String input){
         Items tempItem = player.findItem(input);
         if(tempItem!=null){
             player.dropItem(tempItem);
-            System.out.println("You drop " + tempItem.name);
+            System.out.println(dropItem(tempItem));
         }
         else {
-            System.out.println("You do not have " + input);
+            System.out.println(dropItem(input));
         }
 
 
-    }
-
-    //User Information
-    public void getInventory(){
-        if(player.inventory.size() == 0){
-            System.out.println("Your inventory is empty");
-        } else {
-            System.out.println("Items in inventory:" +
-                    player.getInventory());
-        }
-    }
-    public void look(){
-        System.out.println(player.name + " looks around");
-        player.setDiscovery();
-        System.out.println(player.playerRoom.roomDescription);
-        System.out.println(roomItems());
     }
     public void help(){
-        System.out.println("Asking for help");
+        System.out.println(helpText());
     }
-
-    //Information to String
-    public String roomItems(){
-        if(player.playerRoom.items.size()==0){
-            return "\nThe room is empty of items.";
-        }
-        return "\nItems:" + player.playerRoom.getItems();
+    public void exit(){
+        System.out.println(exitText());
     }
 
     //Scanners
@@ -225,7 +206,96 @@ public class Adventure {
         else{return userInput;}
     }
 
-    //Colors for String
+    //StringTexts
+    //General CommandMenu
+    public String startGameText(){
+        return "Please write the name of your character to start the game";
+    }
+    public String introText() {
+        return "Welcome to WAKE ME UP!\n" +
+                colorText(cyan,
+                        "\nAn evil hypnotist has put " + player.name + " in a hypnosis!"+
+                                "\n" + player.name +  " can't wake up unless they solve the problems in his fantasy land 'Disturbia"+
+                                "\nWrite directions to move around on the map (ex. north, n og go north)"+
+                                "\nYou can write 'look' to get more details about the place you are at"+
+                                "\nAnd if you need help, simply write 'help' to get a hint to solve the problem") +
+                colorText(blue,"\nCurrently " + player.name + " is at " + player.playerRoom.roomName + ".") + "\nWrite a direction:";
+    }
+    public String invalidCommand(String command){
+        return colorText(red,"Unknown command: " + command);
+    }
+    //Go Command
+    public String travelsToNewRoom(){
+        return colorText(blue,player.name+" travels to " + player.playerRoom.roomName);
+    }
+    public String invalidDirection(){
+        return colorText(red,player.name+" cannot walk in this direction");
+    }
+    public String invalidDirection(String input){
+        return colorText(red,input+" is not a valid direction");
+    }
+    //Look Command
+    public String lookText(){
+        player.setDiscovery();
+        return player.name + " looks around\n" +
+                colorText(cyan,player.playerRoom.roomDescription) + "\n" +
+                roomItems();
+    }
+    public String roomItems(){
+        if(player.playerRoom.items.size()==0){
+            return colorText(red,"There are no items in " + player.playerRoom.roomName);
+        }
+        return "Items:" + colorText(blue,player.playerRoom.getItems());
+    }
+    //Inventory Command
+    public String inventoryList(){
+        return "Items in inventory:" +
+                colorText(blue,player.getInventory());
+
+    }
+    public String inventoryListEmpty(){
+        return colorText(red,player.name+"'s inventory is empty");
+    }
+    //Take Command
+    public String takeItem(Items item){
+        return colorText(green,"You pick up " + item.name);
+    }
+    public String takeItem(String item){
+        return colorText(red,player.playerRoom.roomName + " does not contain " + item + " of any kind");
+    }
+    public String exceededWeight(Items item){
+        return colorText(red,"You are not strong enough to pick up " + item.name);
+    }
+    //Drop Command
+    public String dropItem(Items item){
+        return colorText(yellow,"You drop " + item.name);
+    }
+    public String dropItem(String item){
+        return colorText(red,"You do not have " + item);
+    }
+    //Help Command
+    public String helpText(){
+        return player.name + " asks for help" +
+                white +"""
+                Move Commands
+                Go: Move player, North, East, South, West
+                Look: Information of current location
+                Inventory: Shows held items
+                Take: Pick up an item at the location
+                Drop: Drop an item at the location
+                Help: Shows commands
+                Exit: Exit the game
+                """;
+    }
+    //Exit Command
+    public String exitText(){
+        return colorText(red,"Without warning " + player.name + " trips over some strange object in " + player.playerRoom.roomName + " and dies");
+    }
+
+    //Colors
+    public String colorText(String color, String text){
+        return color + text + resetColour;
+    }
     String resetColour = "\u001B[0m";
     String black = "\u001B[30m";
     String red = "\u001B[31m";
